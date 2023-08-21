@@ -10,7 +10,7 @@ class ThumbGet
 
     private const BAD_REQUEST_FILE = 'thebadrequests';
 
-    private const URL = 'https://thumbget.test/';
+    private const URL = 'https://thumbget.com/';
 
     public function setVideoId(string $video_id): string
     {
