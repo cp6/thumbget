@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Thumbget - YouTube thumbnail downloader</title>
+    <meta name="description"
+          content="Thumbget is a YouTube thumbnail downloader, just enter the video id or url and get all the different sized thumbnails to download">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="style.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center my-4">Thumbget</h1>
+    <h2 class="text-center mb-4 fs-5">Easily download YouTube video thumbnails, all you need is the video URL or ID</h2>
+    <div class="card mb-4 shadow-lg bg-light-subtle">
+        <div class="card-body py-4 px-3">
+            <div class="col-md-12">
+                <form method="post" action="process.php">
+                    <fieldset>
+                        <div class="form-group mb-4">
+                            <label for="youtube">YouTube video URL or id:</label>
+                            <input type="text" class="form-control" name="youtube" id="youtube"
+                                   aria-describedby="youtube"
+                                   placeholder="https://www.youtube.com/watch?v=jNQXAC9IVRw">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Get Thumbnails</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container text-center footer-container">
+            <span class="text-muted"><a href="https://corbpie.com" class="text-decoration-none">corbpie</a> is my creator/manager/contact.</span>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
