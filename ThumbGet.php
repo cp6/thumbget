@@ -61,18 +61,24 @@ class ThumbGet
 
     private function callApi()
     {
-        $do_call = @file_get_contents("https://www.googleapis.com/youtube/v3/videos?part=snippet&id={$this->video_id}&key=" . self::YT_API_KEY);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/videos?part=snippet&id={$this->video_id}&key=" . self::YT_API_KEY);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-        if (strpos($http_response_header[0], "403") || strpos($http_response_header[0], "404") || strpos($http_response_header[0], "400")) {
-            return false;
+        if ($http_code === 200) { //Successful response
+
+            $data = json_decode($response, true);
+
+            if ($data['pageInfo']['totalResults'] !== 0) {
+                return $data['items'][0]['snippet'];
+            }
+
         }
-
-        $data = json_decode($do_call, true);
-
-        if ($data['pageInfo']['totalResults'] !== 0) {
-            return $data['items'][0]['snippet'];
-        }
-
+        //Call did not work
         return false;
     }
 
@@ -106,11 +112,12 @@ class ThumbGet
     private function LogBadRequest(string $bad_request): void
     {
         $fp = fopen(self::BAD_REQUEST_FILE . ".txt", 'ab') or exit("Unable to open txt file");
-        file_put_contents(self::BAD_REQUEST_FILE . ".txt", $bad_request . "\n", FILE_APPEND);
+        file_put_contents(self::BAD_REQUEST_FILE . ".txt", date('Y-m-d H:i:s') . ': ' . $bad_request . "\n", FILE_APPEND);
     }
 
-    public function processRequest(string $request): void
+    public function processRequest(string $request)
     {
+
         $this->setRequest($request);//Sets request and length of request
 
         if ($this->request_length >= 50) {//Not a valid URL so log it
@@ -129,9 +136,11 @@ class ThumbGet
 
             $video_data = $this->callApi();//Fetch from YT API
 
-            if (!$video_data) {//Error getting data
-                $this->goToErrorPage();
+            if (!$video_data) {//Api call didnt works so just return the thumbnails
+                echo "<img src='https://i.ytimg.com/vi/{$this->video_id}/maxresdefault.jpg' alt='MAX thumbnail'>";
+                exit;
             }
+
 
             $this->insertVideoInformation($video_data);
         }
